@@ -1,0 +1,408 @@
+---
+title: "Royer Antlers"
+author: "Somerville"
+format: docx
+editor: visual
+---
+
+Climate variables
+
+```{r}
+
+## FIGURE 2 - Climate variables
+
+## CLIMATE STATS
+
+setwd("C:/Users/asomervi/Desktop/_____/Iowa State University/STUDENTS/Royer, Julien")
+
+library(tidyverse)
+library(ggpubr)
+
+Climate <- read.csv("Antlers_and_climate.csv")
+
+A <- ggplot(data = Climate, mapping = aes(y= PrecipNOAA, x= Position, color = Antler, fill = Antler, shape = Antler)) +
+  geom_point(size = 2) +
+  geom_smooth(alpha = .15) +
+  ggtitle("Precipitation monthly totals (1 year)") +
+  xlab("Month [Feb-Nov]") +
+  ylab("1-year precip (cm) - NOAA") +
+  scale_x_continuous(breaks=seq(1,10,2), limits = c(1, 10)) +
+  theme_bw()
+
+B <- ggplot(data = Climate, mapping = aes(y= DIVA.GIS.Rain, x= Position, color = Antler, fill = Antler, shape = Antler)) +
+  geom_point(size = 2) +
+  geom_smooth(alpha = .15) +
+  ggtitle("Precipitation monthly means (50 years)") +
+  xlab("Month [Feb-Nov]") +
+  ylab("50-yr mean precip (cm) - WorldClim") +
+  scale_x_continuous(breaks=seq(1,10,2), limits = c(1, 10)) +
+  theme_bw()
+  
+C <- ggplot(data = Climate, mapping = aes(y= TavgNOAA, x= Position, color = Antler, fill = Antler, shape = Antler)) +
+  geom_point(size = 2) +
+  geom_smooth(alpha = .15) +
+  ggtitle("Temperature monthly mean (1 year)") +
+  xlab("Month [Feb-Nov]") +
+  ylab("1-yr mean T (C) - NOAA") +
+  scale_x_continuous(breaks=seq(1,10,2), limits = c(1, 10)) +
+  theme_bw()
+
+D <- ggplot(data = Climate, mapping = aes(y= TminNOAA, x= Position, color = Antler, fill = Antler, shape = Antler)) +
+  geom_point(size = 2) +
+  geom_smooth(alpha = .15) +
+  ylab("Temp min (C) - NOAA") +
+  scale_x_continuous(breaks=seq(1,10,2), limits = c(1, 10)) +
+  theme_bw()
+
+E <- ggplot(data = Climate, mapping = aes(y= TmaxNOAA, x= Position, color = Antler, fill = Antler, shape = Antler)) +
+  geom_point(size = 2) +
+  geom_smooth(alpha = .15) +
+  ggtitle("1 month total") +
+  xlab("Month [Feb-Nov]") +
+  ylab("Temp max (C) - NOAA") +
+  scale_x_continuous(breaks=seq(1,10,2), limits = c(1, 10)) +
+  theme_bw()
+
+FF <- ggplot(data = Climate, mapping = aes(y= DIVA.GIS.Tmax, x= Position, color = Antler, fill = Antler, shape = Antler)) +
+  geom_point(size = 2) +
+  geom_smooth(alpha = .15) +
+  ggtitle("50 yr precip mean") +
+  xlab("Month [Feb-Nov]") +
+  ylab("Temp max (C) - WorldClim") +
+  scale_x_continuous(breaks=seq(1,10,2), limits = c(1, 10)) +
+  theme_bw()
+
+Group <- ggarrange(A, B, C,
+              labels = c("A", "B", "C"),
+              ncol = 1, nrow = 3, common.legend = TRUE, legend = "right",
+              align = "v")
+  
+Group
+  
+  ggsave(filename = "Fig_2_Climate.tiff",
+         width=5, height=9.5, dpi=300)
+```
+
+Intra-Antler Scatterplots
+
+```{r}
+
+## FIGURE 3 - Scatterplots of intra-antler isotope data
+
+## CARBONATE SCATTERPLOT
+
+setwd("C:/Users/asomervi/Desktop/_____/Iowa State University/STUDENTS/Royer, Julien")
+
+library(tidyverse)
+library(ggalt)
+
+
+Antlers <- read.csv("Antlers_isotope_data_20230404.csv")
+
+
+A <- ggplot(data = Antlers, mapping = aes(x=d13Cap, y = d18O, label = Position)) +
+  geom_point(aes(color = Antler, shape = Antler), size = 2) +
+#  geom_path(aes(color=Antler)) +
+  #geom_text(hjust = 0, vjust = 0) +
+  geom_encircle(aes(fill = Antler), s_shape = 1, expand = 0, alpha = .15) +
+  xlab(expression(paste(delta^{13}, "C apa (VPDB, \u2030)"))) +
+  ylab(expression(paste(delta^{18}, "O apa (VPDB, \u2030)"))) +
+  theme_bw()
+
+ggsave(filename = "Scatterplot_CO3.tiff",
+         width=6, height=4, dpi=300)
+
+## COLLAGEN SCATTERPLOT
+
+B <- ggplot(data = Antlers, mapping = aes(x=d13Ccol, y = d15N, label = Position)) +
+  geom_point(aes(color = Antler, shape = Antler), size = 2) +
+#  geom_path(aes(color = Antler)) +
+#  geom_text(hjust = 0, vjust = 0) +
+  geom_encircle(aes(fill = Antler), s_shape = 1, expand = 0, alpha = .15) +
+  xlab(expression(paste(delta^{13}, "C col (VPDB, \u2030)"))) +
+  ylab(expression(paste(delta^{15}, "N col (AIR, \u2030)"))) +
+  theme_bw()
+
+ggsave(filename = "Scatterplot_Col.tiff",
+         width=6, height=4, dpi=300)
+
+## carbon carbon SCATTERPLOT
+
+C <- ggplot(data = Antlers, mapping = aes(x=d13Cap, y = d13Ccol, label = Position)) +
+ # geom_smooth(color = "black", alpha = .4) +  
+  geom_point(aes(color = Antler, shape = Antler), size = 2) +
+#  geom_path(aes(color=Antler)) +
+ # geom_text(hjust = 0, vjust = 0) +
+  theme_bw() +
+  geom_encircle(aes(fill = Antler), s_shape = 1, expand = 0, alpha = .15) +
+  xlab(expression(paste(delta^{13}, "C apa (VPDB, \u2030)"))) +
+  ylab(expression(paste(delta^{13}, "C col (VPDB, \u2030)"))) +
+  theme_bw()
+
+ggsave(filename = "Scatterplot_C_v_C.tiff",
+         width=6, height=4, dpi=300)
+
+
+## scatterplot stack
+
+Group <- ggarrange(B, A,
+              labels = c("A", "B"),
+              ncol = 2, nrow = 1, common.legend = TRUE, legend = "bottom",
+              align = "v")
+  
+Group
+  
+  ggsave(filename = "Fig_3_Scatterplots.tiff",
+         width=8, height=4, dpi=300)
+```
+
+Relative position of sample from the pedicle of cranium
+
+```{r}
+
+## INTRA-ANTLER GROUP LINE PLOTS BY POSITION ##
+
+
+setwd("C:/Users/asomervi/Desktop/_____/Iowa State University/STUDENTS/Royer, Julien")
+
+library(tidyverse)
+library(ggpubr)
+
+
+Antlers <- read.csv("Antlers_and_climate.csv")
+Antler2 <- read.csv("Antlers_and_climate_d18Ocut.csv")
+
+A <- ggplot(data = Antlers, mapping = aes(x=Position, y = d13Ccol, shape = Antler, color = Antler, shape = Antler)) +
+  geom_point(size = 2.5) +
+  geom_line(size = 0.5) +
+  theme_bw() +
+  scale_x_continuous(breaks=seq(1,10,2), limits = c(1, 10))+
+  ylab(expression(paste(delta^{13}, "C col (VPDB, \u2030)"))) 
+
+B <- ggplot(data = Antlers, mapping = aes(x=Position, y = d15N, color = Antler, shape = Antler)) +
+  geom_point(size = 2.5) +
+  geom_line(size = 0.5) +
+  theme_bw() +
+  scale_x_continuous(breaks=seq(1,10,2), limits = c(1, 10))+
+  ylab(expression(paste(delta^{15}, "N col (AIR, \u2030)"))) 
+
+ C <- ggplot(data = Antlers, mapping = aes(x=Position, y = d13Cap
+                                     , color = Antler, shape = Antler)) +
+  geom_point(size = 2.5) +
+  geom_line(size = 0.5) +
+  theme_bw() +
+  scale_x_continuous(breaks=seq(1,10,2), limits = c(1, 10)) +
+  ylab(expression(paste(delta^{13}, "C apa (VPDB, \u2030)"))) 
+ 
+ 
+D <- ggplot(data = Antler2, mapping = aes(x=Position, y = d18O, color = Antler, shape = Antler)) +
+  geom_point(size = 2.5) +
+  geom_line(size = 0.5) +
+  theme_bw() +
+  scale_x_continuous(breaks=seq(1,10,2), limits = c(1, 10))+
+  scale_y_continuous(limits = c(-9, -3.5)) +
+  ylab(expression(paste(delta^{18}, "O apa (VPDB, \u2030)"))) 
+
+Group <- ggarrange(A, B, C, D,
+
+              labels = c("A", "B", "C", "D"),
+              ncol = 2, nrow = 2, common.legend = TRUE, legend = "bottom",
+              align = "v")
+  
+Group
+  
+  ggsave(filename = "Intra-antler_group.tiff",
+         width=8.5, height=7, dpi=300)
+```
+
+Distance from pedicle of cranium
+
+```{r}
+## INTRA-ANTLER GROUP LINE PLOTS - by distance
+
+setwd("C:/Users/asomervi/Desktop/_____/Iowa State University/STUDENTS/Royer, Julien")
+
+library(tidyverse)
+library(ggpubr)
+
+
+Antlers <- read.csv("Antlers_and_climate.csv")
+Antlers2 <- read.csv("Antlers_and_climate_d18Ocut.csv")
+
+
+ A <- ggplot(data = Antlers, mapping = aes(x=Dist, y = d13Ccol, shape = Antler, color = Antler, shape = Antler)) +
+  geom_point(size = 2) +
+  geom_line(size = 0.5) +
+  theme_bw() +
+  ylab(expression(paste(delta^{13}, "C col (VPDB, \u2030)"))) 
+
+B <- ggplot(data = Antlers, mapping = aes(x=Dist, y = d15N, color = Antler, shape = Antler)) +
+  geom_point(size = 2) +
+  geom_line(size = 0.5) +
+  theme_bw() +
+  ylab(expression(paste(delta^{15}, "N col (AIR, \u2030)")))
+
+
+C <- ggplot(data = Antlers, mapping = aes(x=Dist, y = d13Cap, color = Antler, shape = Antler)) +
+  geom_point(size = 2) +
+  geom_line(size = 0.5) +
+  theme_bw() +
+  ylab(expression(paste(delta^{13}, "C apa (VPDB, \u2030)"))) 
+ 
+ 
+D <- ggplot(data = Antlers2, mapping = aes(x=Dist, y = d18O, color = Antler, shape = Antler)) +
+  geom_point(size = 2) +
+  geom_line(size = 0.5) +
+  theme_bw() +
+  ylab(expression(paste(delta^{18}, "O apa (VPDB, \u2030)"))) 
+
+
+## OVER TIME stack
+
+Group <- ggarrange(A, B, C, D,
+
+              labels = c("A", "B", "C", "D"),
+              ncol = 2, nrow = 2, common.legend = TRUE, legend = "bottom",
+              align = "v")
+  
+Group
+  
+  ggsave(filename = "Fig_4_Intra_antler.tiff",
+         width=8.5, height=7, dpi=300)
+  
+```
+
+Correlations with precipitation variables
+
+```{r}
+
+setwd("C:/Users/asomervi/Desktop/_____/Iowa State University/STUDENTS/Royer, Julien")
+
+library(tidyverse)
+library(ggalt)
+library(corrplot)
+library(xtable)
+
+Climate <- read.csv("Antlers_and_climate.csv")
+Climate2 <- read.csv("Antlers_and_climate_d18Ocut.csv")
+
+## PRECIPITATION
+
+A<- ggplot(data = Climate, mapping = aes(x = PrecipNOAA, y = d13Ccol, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("1 yr precip (cm)") +
+  ylab(expression(paste(delta^{13}, "C col (VPDB, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+B<- ggplot(data = Climate, mapping = aes(x = PrecipNOAA, y = d15N, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("1 yr precip (cm)") +
+  ylab(expression(paste(delta^{15}, "N col (AIR, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+C<- ggplot(data = Climate, mapping = aes(x = PrecipNOAA, y = d13Cap, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("1 yr precip (cm)") +
+  ylab(expression(paste(delta^{13}, "C apa (VPDB, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+D<- ggplot(data = Climate2, mapping = aes(x = PrecipNOAA, y = d18O, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("1 yr precip (cm)") +
+  ylab(expression(paste(delta^{18}, "O apa (VPDB, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+E<- ggplot(data = Climate, mapping = aes(x = DIVA.GIS.Rain, y = d13Ccol, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("50 yr precip (cm)") +
+  ylab(expression(paste(delta^{13}, "C col (VPDB, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+FF<- ggplot(data = Climate, mapping = aes(x = DIVA.GIS.Rain, y = d15N, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("50 yr precip (cm)") +
+  ylab(expression(paste(delta^{15}, "N col (AIR, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+G<- ggplot(data = Climate, mapping = aes(x = DIVA.GIS.Rain, y = d13Cap, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("50 yr precip (cm)") +
+  ylab(expression(paste(delta^{13}, "C apa (VPDB, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+H<- ggplot(data = Climate2, mapping = aes(x = DIVA.GIS.Rain, y = d18O, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("50 yr precip (cm)") +
+  ylab(expression(paste(delta^{18}, "O apa (VPDB, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+
+Group_all <- ggarrange(A, B, E, FF, C, D, G, H,
+              labels = c("A", "B", "C", "D", "E", "F", "G", "H"),
+              ncol = 4, nrow = 2, common.legend = TRUE, legend = "bottom",
+              align = "v")
+
+Group_all
+    ggsave(filename = "Fig_5_Correlations_precip.tiff",
+         width=10, height=5.5, dpi=300)
+```
+
+Temperature variables
+
+```{r}
+
+setwd("C:/Users/asomervi/Desktop/_____/Iowa State University/STUDENTS/Royer, Julien")
+
+library(tidyverse)
+library(ggpubr)
+
+Climate <- read.csv("Antlers_and_climate.csv")
+Climate2 <- read.csv("Antlers_and_climate_d18Ocut.csv")
+
+## TEMPERATURE
+
+A<- ggplot(data = Climate, mapping = aes(x = TavgNOAA, y = d13Ccol, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("1 yr mean T (C)") +
+  ylab(expression(paste(delta^{13}, "C col (VPDB, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+B<- ggplot(data = Climate, mapping = aes(x = TavgNOAA, y = d15N, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("1 yr mean T (C)") +
+  ylab(expression(paste(delta^{15}, "N col (AIR, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+C<- ggplot(data = Climate, mapping = aes(x = TavgNOAA, y = d13Cap, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("1 yr mean T (C)") +
+  ylab(expression(paste(delta^{13}, "C apa (VPDB, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+D<- ggplot(data = Climate2, mapping = aes(x = TavgNOAA, y = d18O, color = Antler, shape = Antler)) +
+  geom_point() +
+  theme_bw() +
+  xlab("1 yr mean T (C)") +
+  ylab(expression(paste(delta^{18}, "O apa (VPDB, \u2030)"))) + 
+  geom_smooth(method = lm, alpha = .15)
+
+
+Group_all <- ggarrange(A, B, C, D,
+              labels = c("A", "B", "C", "D"),
+              ncol = 2, nrow = 2, common.legend = TRUE, legend = "bottom",
+              align = "v")
+Group_all
+    ggsave(filename = "Fig_6_Correlations_temp.tiff",
+         width=5, height=5.5, dpi=300)
+```
